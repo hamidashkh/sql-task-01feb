@@ -79,3 +79,25 @@ Begin
 	Values
 	(@id,@name,@surname,@date,@statementType)
 End
+
+Create Trigger AuthorsUpdated
+on Authors
+after update
+as
+Begin
+	declare @id int
+	declare @name nvarchar(10)
+	declare @surname nvarchar(100)
+	declare @date DateTime2
+	declare @statementType nvarchar(100)
+
+	Select @id = a.Id From inserted a
+	Select @name = a.Name From inserted a
+	Select @surname=a.Surname From inserted a
+	Select @date = GETUTCDATE() From inserted a
+	Select @statementType = 'Inserted' From inserted a
+
+	Insert Into ArchiveAuthors(Id, Name,Surname, Date, StatementType)
+	Values
+	(@id,@name,@surname,@date,@statementType)
+End
